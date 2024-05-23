@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜数字自由1.0版</title>
+    <script src="./js/guess_number.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/guess_number.css">
+</head>
+
+<body>
+    <p class="remaining">剩余次数：7</p>
+    <ul class="list">
+        <li id="template" class="list-item hidden">
+            <p class="item-times">2</p>
+            <p class="item-time">12:00:01</p>
+            <p class="item-num">4567</p>
+            <p class="item-res bg-red ">1A0B</p>
+        </li>
+
+    </ul>
+    <div class="ipt-item">
+        <input class="ipt" type="number" name="number" id="">
+        <button class="btn" onclick="submit()">提交</button>
+    </div>
+    <p class="tips"></p>
+    <button disabled title="次数耗尽才能看答案" class="show-answer" onclick="showPassword()">看答案</button>
+
+    <div class="rule" name="" id="" cols="30" rows="10">
+    <strong>规则:</strong><br><br>
+    系统已随机出一个 4 位数密码，请在限定的 7 次机会中，尝试猜出正确的密码。
+    玩家提交数字后，系统将会反馈【数字】和【位置】正确的个数：若数字和位置都相同则为A，若数字相同但位置不同则为B。
+    如正确答案为 5234，而玩家提交 5346，则是 1A2B。其中5的位置对了，记为1A；3和4这两个数字对了但位置不对，因此记为 2B，合起来就是 1A2B。
+    <br><br>
+    密码由【0、1、2、3、4、5、6、7、8、9】组成，数字不重复
+    </div>
+</body>
+
+</html>

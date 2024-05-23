@@ -1,0 +1,96 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fafafa;
+  padding-top: 50px;
+}
+body .list {
+  width: 50%;
+}
+body .list .list-item {
+  border: 1px solid #cccccc;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  background: #fff;
+}
+body .list .list-item .item-times {
+  color: #6f6f6e;
+  font-weight: 700;
+}
+body .list .list-item .item-num {
+  color: #6f6f6e;
+  font-weight: 700;
+  margin: 0 30px;
+}
+body .list .list-item .item-res {
+  padding: 2px 4px;
+  border-radius: 2px;
+  margin: 0 30px;
+}
+body .list .list-item .bg-red {
+  background: #ffebec;
+  border: 1px solid #ffd8d9;
+  color: #ff3b40;
+}
+body .list .list-item .bg-green {
+  background: #edffef;
+  border: 1px solid #eaf7ec;
+  color: #56c380;
+}
+body .list .hidden {
+  display: none;
+}
+body .ipt-item {
+  height: 40px;
+  width: 50%;
+  display: flex;
+}
+body .ipt-item .ipt {
+  height: 38px;
+  flex: 1;
+  border: 1px solid #cccccc;
+  padding-left: 10px;
+  font-size: 16px;
+  border-radius: 3px;
+}
+body .ipt-item .btn {
+  flex: 0 0 80px;
+  height: 40px;
+  margin-left: 5px;
+  border: 1px solid #99ceff;
+  cursor: pointer;
+  background: #e5f2ff;
+  color: #0084ff;
+  border-radius: 3px;
+}
+body .tips {
+  margin-top: 10px;
+  color: red;
+  font-size: 12px;
+}
+body .remaining {
+  padding: 0px 4px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+body .show-answer {
+  margin-top: 10px;
+  padding: 2px 4px;
+}
+body .rule {
+  width: 50%;
+  background: #faf8f0;
+  color: #c09853;
+  padding: 20px;
+  font-size: 14px;
+  margin-top: 20px;
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜数字自由1.0版</title>
+    <!-- <script src="./js/guess_number.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/guess_number.css"> -->
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #fafafa;
+            padding-top: 50px;
+        }
+
+        body .list {
+            width: 50%;
+        }
+
+        body .list .list-item {
+            border: 1px solid #cccccc;
+            display: flex;
+            height: 60px;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+
+        body .list .list-item .item-times {
+            color: #6f6f6e;
+            font-weight: 700;
+        }
+
+        body .list .list-item .item-num {
+            color: #6f6f6e;
+            font-weight: 700;
+            margin: 0 30px;
+        }
+
+        body .list .list-item .item-res {
+            padding: 2px 4px;
+            border-radius: 2px;
+            margin: 0 30px;
+        }
+
+        body .list .list-item .bg-red {
+            background: #ffebec;
+            border: 1px solid #ffd8d9;
+            color: #ff3b40;
+        }
+
+        body .list .list-item .bg-green {
+            background: #edffef;
+            border: 1px solid #eaf7ec;
+            color: #56c380;
+        }
+
+        body .list .hidden {
+            display: none;
+        }
+
+        body .ipt-item {
+            height: 40px;
+            width: 50%;
+            display: flex;
+        }
+
+        body .ipt-item .ipt {
+            height: 38px;
+            flex: 1;
+            border: 1px solid #cccccc;
+            padding-left: 10px;
+            font-size: 16px;
+            border-radius: 3px;
+        }
+
+        body .ipt-item .btn {
+            flex: 0 0 80px;
+            height: 40px;
+            margin-left: 5px;
+            border: 1px solid #99ceff;
+            cursor: pointer;
+            background: #e5f2ff;
+            color: #0084ff;
+            border-radius: 3px;
+        }
+
+        body .tips {
+            margin-top: 10px;
+            color: red;
+            font-size: 12px;
+        }
+
+        body .remaining {
+            padding: 0px 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        body .show-answer {
+            margin-top: 10px;
+            padding: 2px 4px;
+        }
+
+        body .rule {
+            width: 50%;
+            background: #faf8f0;
+            color: #c09853;
+            padding: 20px;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="remaining">剩余次数：7</p>
+    <ul class="list">
+        <li id="template" class="list-item hidden">
+            <p class="item-times">2</p>
+            <p class="item-time">12:00:01</p>
+            <p class="item-num">4567</p>
+            <p class="item-res bg-red ">1A0B</p>
+        </li>
+
+    </ul>
+    <div class="ipt-item">
+        <input class="ipt" type="number" name="number" id="">
+        <button class="btn" onclick="submit()">提交</button>
+    </div>
+    <p class="tips"></p>
+    <button disabled title="次数耗尽才能看答案" class="show-answer" onclick="showPassword()">看答案</button>
+
+    <div class="rule" name="" id="" cols="30" rows="10">
+        <strong>规则:</strong><br><br>
+        系统已随机出一个 4 位数密码，请在限定的 7 次机会中，尝试猜出正确的密码。
+        玩家提交数字后，系统将会反馈【数字】和【位置】正确的个数：若数字和位置都相同则为A，若数字相同但位置不同则为B。
+        如正确答案为 5234，而玩家提交 5346，则是 1A2B。其中5的位置对了，记为1A；3和4这两个数字对了但位置不对，因此记为 2B，合起来就是 1A2B。
+        <br><br>
+        密码由【0、1、2、3、4、5、6、7、8、9】组成，数字不重复
+    </div>
+    <script>
+        let password = '0000';
+        let times = 7; // 总次数
+        const MIN = 0;
+        const MAX = 9;
+        window.onload = function () {
+            generatePassword();
+            console.log('答案是：', password);
+        }
+        function submit() {
+            const ipt = document.querySelector('.ipt');
+            const tips = document.querySelector('.tips');
+            if (ipt && tips) {
+                const validData = validation(ipt.value);
+                if (validData.res) {
+                    // 校验通过
+                    times--;
+                    const num = ipt.value;
+                    const res = calcRes(num);
+                    const isRight = res === '4A0B';
+                    // 渲染结果行
+                    generateResLine(num, res, isRight);
+                    // 渲染剩余次数
+                    changeRemaining();
+                    // 调整输入组件
+                    updateInput(isRight);
+                    if (isRight) {
+                        alert('难道你真是天才？！！')
+                    }
+                }
+                tips.innerHTML = validData.err;
+            }
+        }
+        function validation(input) {
+            const set = new Set(input);
+            if (set.size === 4) {
+                return {
+                    res: true,
+                    err: ''
+                }
+            }
+            return {
+                res: false,
+                err: '请输入4位数字，且不能重复！',
+            }
+        }
+        function updateInput(isRight) {
+            const ipt = document.querySelector('.ipt');
+            const btn = document.querySelector('.btn');
+            const showAnswer = document.querySelector('.show-answer');
+            if (ipt && btn && showAnswer) {
+                ipt.value = '';
+                if (times <= 0 || isRight) {
+                    ipt.disabled = true;
+                    btn.disabled = true;
+                    showAnswer.disabled = false;
+                }
+            }
+
+        }
+
+        function changeRemaining() {
+            const remaining = document.querySelector('.remaining');
+            if (remaining) {
+                remaining.innerHTML = '剩余次数：' + times;
+            }
+        }
+        function showPassword() {
+            alert('答案为：' + password);
+        }
+        function calcRes(num) {
+            const str = '' + num;
+            let a = 0;
+            let b = 0;
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (str[i] === password[j]) {
+                        i === j ? a++ : b++;
+                    }
+                }
+            }
+            return '' + a + 'A' + b + 'B';
+        }
+        function generatePassword() {
+            const set = new Set();
+            let p = '';
+            for (let i = 0; i < 4; i++) {
+                let val = getRandom(MIN, MAX);
+                while (set.has(val)) {
+                    val = getRandom(MIN, MAX);
+                }
+                set.add(val);
+                p += val;
+            }
+            password = p;
+        }
+        function getRandom(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function generateResLine(num, res, isRight) {
+            const ul = document.querySelector('.list');
+            const liTemplate = document.querySelector('#template');
+            if (ul && liTemplate) {
+                const li = liTemplate.cloneNode(true);
+                li.childNodes[1].innerHTML = 7 - times;
+                li.childNodes[3].innerHTML = new Date().toLocaleTimeString();
+                li.childNodes[5].innerHTML = num;
+                li.childNodes[7].innerHTML = res;
+                // 设置标签颜色类名
+                const resClassName = isRight ? 'bg-green' : 'bg-red';
+                li.childNodes[7].classList.add(resClassName);
+                // 显示
+                li.classList.remove("hidden");
+                ul.appendChild(li);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
